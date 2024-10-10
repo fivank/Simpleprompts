@@ -2,6 +2,28 @@ let data;
 let currentCategory;
 let currentPrompt;
 
+// Load default data.json on page load
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('data.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(json => {
+            data = json;
+            renderCategories();
+            showElement('addCategoryButton');
+            showElement('saveFileButton');
+            showPopup('Default prompts loaded successfully!');
+        })
+        .catch(error => {
+            console.error('Error loading default data.json:', error);
+            showPopup('Failed to load default prompts.');
+        });
+});
+
 function loadFile(event) {
     const file = event.target.files[0];
     if (file) {
