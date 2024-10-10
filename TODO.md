@@ -1,5 +1,8 @@
 # UI/UX Feedback and Improvements
 
+## Refactor: Simple
+split the html, css and js parts in different files
+
 ## Default Prompt File
 There should be a default prompt file loaded automatically by the app. This file is the `default_data.json` file, found in the same directory as the `index.html` file.
 
