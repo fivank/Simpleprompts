@@ -43,6 +43,20 @@ header {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 100%;
     margin-bottom: var(--space-md);
+    position: relative;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.app-title {
+    flex-grow: 1;
+    text-align: center;
 }
 
 .container {
@@ -171,6 +185,71 @@ header {
 
 .delete-button-small:hover {
     background-color: var(--red-color);
+}
+
+/* Hamburger Menu Styles - Updated for header placement */
+.hamburger-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.hamburger-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 20px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+.hamburger-icon span {
+    width: 100%;
+    height: 3px;
+    background-color: var(--white);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.hamburger-icon:hover span {
+    background-color: var(--light-button-grey);
+}
+
+.menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--white);
+    min-width: 180px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 8px 0;
+    z-index: 100;
+    display: none;
+}
+
+.menu-dropdown.show {
+    display: block;
+}
+
+.menu-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: var(--dark-grey);
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+.menu-item:hover {
+    background-color: var(--light-grey);
+}
+
+.menu-item label {
+    cursor: pointer;
+    display: block;
+    width: 100%;
 }
 
 @media (min-width: 768px) {

@@ -17,7 +17,6 @@ let currentUser = null;
         appId: "1:19366457023:web:a0b6fa3546833d8734600a"
         };
 
-
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -28,19 +27,45 @@ auth.onAuthStateChanged((user) => {
   if (user) {
     currentUser = user;
     showPopup(`Signed in as ${user.displayName}`);
-    document.getElementById('googleSignInButton').classList.add('hidden');
-    document.getElementById('googleSignOutButton').classList.remove('hidden');
-    document.getElementById('loadFromFirebaseButton').classList.remove('hidden');
-    document.getElementById('saveToFirebaseButton').classList.remove('hidden');
+    document.getElementById('googleSignInMenuItem').classList.add('hidden');
+    document.getElementById('googleSignOutMenuItem').classList.remove('hidden');
+    document.getElementById('loadFromFirebaseMenuItem').classList.remove('hidden');
+    document.getElementById('saveToFirebaseMenuItem').classList.remove('hidden');
     // Automatically load JSON from Firebase upon auth
     loadFromFirebase();
   } else {
     currentUser = null;
-    document.getElementById('googleSignInButton').classList.remove('hidden');
-    document.getElementById('googleSignOutButton').classList.add('hidden');
-    document.getElementById('loadFromFirebaseButton').classList.add('hidden');
-    document.getElementById('saveToFirebaseButton').classList.add('hidden');
+    document.getElementById('googleSignInMenuItem').classList.remove('hidden');
+    document.getElementById('googleSignOutMenuItem').classList.add('hidden');
+    document.getElementById('loadFromFirebaseMenuItem').classList.add('hidden');
+    document.getElementById('saveToFirebaseMenuItem').classList.add('hidden');
   }
+});
+
+// ------------------------------
+// Hamburger Menu
+// ------------------------------
+document.addEventListener('DOMContentLoaded', function() {
+  const hamburgerIcon = document.getElementById('hamburgerIcon');
+  const menuDropdown = document.getElementById('menuDropdown');
+  
+  // Toggle menu when hamburger icon is clicked
+  hamburgerIcon.addEventListener('click', function(event) {
+    menuDropdown.classList.toggle('show');
+    event.stopPropagation();
+  });
+  
+  // Close menu when clicking outside
+  document.addEventListener('click', function() {
+    if (menuDropdown.classList.contains('show')) {
+      menuDropdown.classList.remove('show');
+    }
+  });
+  
+  // Prevent menu from closing when clicking inside the menu
+  menuDropdown.addEventListener('click', function(event) {
+    event.stopPropagation();
+  });
 });
 
 // ------------------------------
@@ -86,7 +111,7 @@ async function loadFromFirebase() {
       }
       renderCategories();
       showElement('addCategoryButton');
-      showElement('saveFileButton');
+      showElement('saveFileMenuItem');
       showPopup('Prompts loaded from Firebase successfully!');
     } else {
       showPopup('No data found in Firebase for this user.');
@@ -125,7 +150,7 @@ function loadFile(event) {
         data = JSON.parse(e.target.result);
         renderCategories();
         showElement('addCategoryButton');
-        showElement('saveFileButton');
+        showElement('saveFileMenuItem');
         showPopup('Prompts loaded successfully!');
       } catch (error) {
         console.error('Error parsing JSON:', error);
@@ -199,8 +224,12 @@ function showPrompts(category) {
   showElement('pageTitle');
   hideElement('categories');
   hideElement('addCategoryButton');
-  hideElement('saveFileButton');
-  hideElement('loadFileButton');
+  hideElement('saveFileMenuItem');
+  hideElement('loadFileMenuItem');
+  hideElement('loadFromFirebaseMenuItem');
+  hideElement('saveToFirebaseMenuItem');
+  hideElement('googleSignInMenuItem');
+  hideElement('googleSignOutMenuItem');
   showElement('prompts');
   updateTitle(category.name);
 
@@ -381,8 +410,21 @@ function goBack() {
   hideElement('addPrompt');
   updateTitle('Categories');
   showElement('addCategoryButton');
-  showElement('saveFileButton');
-  showElement('loadFileButton');
+  showElement('saveFileMenuItem');
+  showElement('loadFileMenuItem');
+  
+  // Show the appropriate authentication menu items based on login state
+  if (currentUser) {
+    hideElement('googleSignInMenuItem');
+    showElement('googleSignOutMenuItem');
+    showElement('loadFromFirebaseMenuItem');
+    showElement('saveToFirebaseMenuItem');
+  } else {
+    showElement('googleSignInMenuItem');
+    hideElement('googleSignOutMenuItem');
+    hideElement('loadFromFirebaseMenuItem');
+    hideElement('saveToFirebaseMenuItem');
+  }
 }
 
 // ------------------------------
@@ -392,8 +434,12 @@ function navigateToAddCategory() {
   hideElement('pageTitle');
   hideElement('categories');
   hideElement('addCategoryButton');
-  hideElement('saveFileButton');
-  hideElement('loadFileButton');
+  hideElement('saveFileMenuItem');
+  hideElement('loadFileMenuItem');
+  hideElement('loadFromFirebaseMenuItem');
+  hideElement('saveToFirebaseMenuItem');
+  hideElement('googleSignInMenuItem');
+  hideElement('googleSignOutMenuItem');
   showElement('addCategory');
 }
 

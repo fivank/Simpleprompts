@@ -11,7 +11,30 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <header>Prompt Organizer</header>
+  <header>
+    <div class="header-content">
+      <span class="app-title">Prompt Organizer</span>
+      <div class="hamburger-menu">
+        <div class="hamburger-icon" id="hamburgerIcon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="menu-dropdown" id="menuDropdown">
+          <div class="menu-item" id="googleSignInMenuItem" onclick="signInWithGoogle()">Sign in with Google</div>
+          <div class="menu-item hidden" id="googleSignOutMenuItem" onclick="signOutFromGoogle()">Sign Out</div>
+          <div class="menu-item">
+            <label for="fileInput" id="loadFileMenuItem">Load Prompts File</label>
+            <input type="file" id="fileInput" accept=".json" onchange="loadFile(event)">
+          </div>
+          <div class="menu-item" id="saveFileMenuItem" onclick="saveFile()">Save Prompts File</div>
+          <div class="menu-item hidden" id="loadFromFirebaseMenuItem" onclick="loadFromFirebase()">Load from Firebase</div>
+          <div class="menu-item hidden" id="saveToFirebaseMenuItem" onclick="saveToFirebase()">Save to Firebase</div>
+        </div>
+      </div>
+    </div>
+  </header>
+  
   <div class="container">
     <div class="title-container">
       <div class="subtitle" id="pageTitle">Categories</div>
@@ -20,19 +43,6 @@
 
   <!-- Button Container for file/folder operations -->
   <div class="button-container">
-    <!-- Google Authentication Buttons -->
-    <button class="load-button" id="googleSignInButton" onclick="signInWithGoogle()">Sign in with Google</button>
-    <button class="save-button hidden" id="googleSignOutButton" onclick="signOutFromGoogle()">Sign Out</button>
-
-    <!-- Firebase Load/Save -->
-    <button class="save-button hidden" id="loadFromFirebaseButton" onclick="loadFromFirebase()">Load from Firebase</button>
-    <button class="save-button hidden" id="saveToFirebaseButton" onclick="saveToFirebase()">Save to Firebase</button>
-
-    <!-- Local file load/save -->
-    <label class="load-button" for="fileInput" id="loadFileButton">Load Prompts File</label>
-    <input type="file" id="fileInput" accept=".json" onchange="loadFile(event)">
-    <button class="save-button hidden" id="saveFileButton" onclick="saveFile()">Save Prompts File</button>
-
     <!-- Add new category -->
     <button class="add-category-button hidden" id="addCategoryButton" onclick="navigateToAddCategory()">+ Add new category</button>
   </div>
