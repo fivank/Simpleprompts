@@ -1,60 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt Organizer</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Prompt Organizer</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Firebase App (Core) CDN -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <header>Prompt Organizer</header>
-    <div class="container">
-        <div class="title-container">
-            <div class="subtitle" id="pageTitle">Categories</div>
-        </div>
+  <header>Prompt Organizer</header>
+  <div class="container">
+    <div class="title-container">
+      <div class="subtitle" id="pageTitle">Categories</div>
     </div>
+  </div>
+
+  <!-- Button Container for file/folder operations -->
+  <div class="button-container">
+    <!-- Google Authentication Buttons -->
+    <button class="load-button" id="googleSignInButton" onclick="signInWithGoogle()">Sign in with Google</button>
+    <button class="save-button hidden" id="googleSignOutButton" onclick="signOutFromGoogle()">Sign Out</button>
+
+    <!-- Firebase Load/Save -->
+    <button class="save-button hidden" id="loadFromFirebaseButton" onclick="loadFromFirebase()">Load from Firebase</button>
+    <button class="save-button hidden" id="saveToFirebaseButton" onclick="saveToFirebase()">Save to Firebase</button>
+
+    <!-- Local file load/save -->
+    <label class="load-button" for="fileInput" id="loadFileButton">Load Prompts File</label>
+    <input type="file" id="fileInput" accept=".json" onchange="loadFile(event)">
+    <button class="save-button hidden" id="saveFileButton" onclick="saveFile()">Save Prompts File</button>
+
+    <!-- Add new category -->
+    <button class="add-category-button hidden" id="addCategoryButton" onclick="navigateToAddCategory()">+ Add new category</button>
+  </div>
+
+  <!-- Categories Container -->
+  <div class="container" id="categories">
+    <!-- Categories will be rendered here -->
+  </div>
+
+  <!-- Prompts Container -->
+  <div class="container hidden" id="prompts">
     <div class="button-container">
-        <label class="load-button" for="fileInput" id="loadFileButton">Load Prompts File</label>
-        <input type="file" id="fileInput" accept=".json" onchange="loadFile(event)">
-        <button class="save-button hidden" id="saveFileButton" onclick="saveFile()">Save Prompts File</button>
-        <button class="add-category-button hidden" id="addCategoryButton" onclick="navigateToAddCategory()">+ Add new category</button>
+      <button class="back-button" onclick="goBack()">Back</button>
+      <button class="add-prompt-button" onclick="navigateToAddPrompt()">+ Add new prompt</button>
+      <button class="delete-button disabled" id="deleteCategoryButton" onclick="deleteCategory()">Delete Category</button>
     </div>
-    <div class="container" id="categories">
-        <!-- Categories will be rendered here -->
+    <div id="promptsList">
+      <!-- Prompts will be rendered here -->
     </div>
-    <div class="container hidden" id="prompts">
-        <div class="button-container">
-            <button class="back-button" onclick="goBack()">Back</button>
-            <button class="add-prompt-button" onclick="navigateToAddPrompt()">+ Add new prompt</button>
-            <button class="delete-button disabled" id="deleteCategoryButton" onclick="deleteCategory()">Delete Category</button>
-        </div>
-        <div id="promptsList">
-            <!-- Prompts will be rendered here -->
-        </div>
+  </div>
+
+  <!-- Add Category Container -->
+  <div class="container hidden" id="addCategory">
+    <div class="subsubtitle">New Category</div>
+    <div class="button-container">
+      <button class="back-button" onclick="goBack()">Back</button>
     </div>
-    <div class="container hidden" id="addCategory">
-        <div class="subsubtitle">New Category</div>
-        <div class="button-container">
-            <button class="back-button" onclick="goBack()">Back</button>
-        </div>
-        <div class="input-container">
-            <input type="text" id="newCategoryInput" class="category-input" placeholder="Enter category name" />
-            <button class="save-button" onclick="saveCategory()">Save</button>
-        </div>
+    <div class="input-container">
+      <input type="text" id="newCategoryInput" class="category-input" placeholder="Enter category name" />
+      <button class="save-button" onclick="saveCategory()">Save</button>
     </div>
-    <div class="container hidden" id="addPrompt">
-        <div class="subtitle">New Prompt in <span id="currentCategoryName"></span></div>
-        <div class="button-container">
-            <button class="back-button" onclick="goBack()">Back</button>
-        </div>
-        <div class="prompt-input-container">
-            <input type="text" id="newPromptName" class="prompt-input" placeholder="Enter prompt name" />
-            <input type="text" id="newPromptInfo" class="prompt-input" placeholder="Enter prompt information" />
-            <textarea id="newPromptText" class="prompt-input" placeholder="Enter prompt text" rows="4"></textarea>
-            <button class="save-button" onclick="savePrompt()">Save</button>
-        </div>
+  </div>
+
+  <!-- Add/Edit Prompt Container -->
+  <div class="container hidden" id="addPrompt">
+    <div class="subtitle">New Prompt in <span id="currentCategoryName"></span></div>
+    <div class="button-container">
+      <button class="back-button" onclick="goBack()">Back</button>
     </div>
-    <div class="popup" id="popupMessage">Prompt copied to clipboard!</div>
-    <script src="script.js"></script>
+    <div class="prompt-input-container">
+      <input type="text" id="newPromptName" class="prompt-input" placeholder="Enter prompt name" />
+      <input type="text" id="newPromptInfo" class="prompt-input" placeholder="Enter prompt information" />
+      <textarea id="newPromptText" class="prompt-input" placeholder="Enter prompt text" rows="4"></textarea>
+      <button class="save-button" onclick="savePrompt()">Save</button>
+    </div>
+  </div>
+
+  <div class="popup" id="popupMessage">Prompt copied to clipboard!</div>
+
+  <!-- Main Script -->
+  <script src="script.js"></script>
 </body>
 </html>
