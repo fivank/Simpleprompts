@@ -32,6 +32,8 @@ auth.onAuthStateChanged((user) => {
     document.getElementById('googleSignOutButton').classList.remove('hidden');
     document.getElementById('loadFromFirebaseButton').classList.remove('hidden');
     document.getElementById('saveToFirebaseButton').classList.remove('hidden');
+    // Automatically load JSON from Firebase upon auth
+    loadFromFirebase();
   } else {
     currentUser = null;
     document.getElementById('googleSignInButton').classList.remove('hidden');
@@ -110,30 +112,6 @@ async function saveToFirebase() {
     showPopup('Failed to save data to Firebase.');
   }
 }
-
-// ------------------------------
-// Load default data.json on page load
-// ------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('./data.json')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(json => {
-      data = json;
-      renderCategories();
-      showElement('addCategoryButton');
-      showElement('saveFileButton');
-      showPopup('Default prompts loaded successfully!');
-    })
-    .catch(error => {
-      console.error('Error loading default data.json:', error);
-      showPopup('Failed to load default prompts.');
-    });
-});
 
 // ------------------------------
 // Local File Load
@@ -283,6 +261,11 @@ function confirmDeletePrompt(index) {
     currentCategory.prompts.splice(index, 1);
     showPrompts(currentCategory); // Re-render the prompts list
     showPopup('Prompt deleted successfully!');
+    
+    // Auto-save to Firebase if signed in
+    if (currentUser) {
+      saveToFirebase();
+    }
   }
 }
 
@@ -297,6 +280,11 @@ function deleteCategory() {
   goBack();
   renderCategories();
   showPopup('Category deleted successfully!');
+  
+  // Auto-save to Firebase if signed in
+  if (currentUser) {
+    saveToFirebase();
+  }
 }
 
 // ------------------------------
@@ -345,16 +333,18 @@ function savePrompt() {
     currentCategory.prompts[currentPrompt] = promptData;
   }
 
-  // Clear input fields
+  // Clear input fields and update view
   document.getElementById('newPromptName').value = '';
   document.getElementById('newPromptInfo').value = '';
   document.getElementById('newPromptText').value = '';
-
-  // Return to prompts view
   hideElement('addPrompt');
   showPrompts(currentCategory);
-
   showPopup(currentPrompt === null ? 'Prompt added successfully!' : 'Prompt updated successfully!');
+  
+  // Auto-save to Firebase if signed in
+  if (currentUser) {
+    saveToFirebase();
+  }
 }
 
 // ------------------------------
@@ -422,4 +412,9 @@ function saveCategory() {
   renderCategories();
   goBack();
   showPopup('Category added successfully!');
+  
+  // Auto-save to Firebase if signed in
+  if (currentUser) {
+    saveToFirebase();
+  }
 }
